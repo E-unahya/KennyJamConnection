@@ -1,0 +1,54 @@
+[gd_scene load_steps=9 format=3 uid="uid://dybm4q1hh8rj4"]
+
+[ext_resource type="Script" path="res://Present.gd" id="1_7mx6u"]
+[ext_resource type="Texture2D" uid="uid://ro3tgfnnyc6u" path="res://tilemap.png" id="2_tqkoa"]
+
+[sub_resource type="Curve2D" id="Curve2D_0wau8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_26ynw"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_htihg"]
+atlas = ExtResource("2_tqkoa")
+region = Rect2(85, 119, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_181us"]
+atlas = ExtResource("2_tqkoa")
+region = Rect2(102, 119, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hmp68"]
+atlas = ExtResource("2_tqkoa")
+region = Rect2(119, 119, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tpyma"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_htihg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_181us")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hmp68")
+}],
+"loop": false,
+"name": &"Open",
+"speed": 5.0
+}]
+
+[node name="Present" type="Path2D"]
+curve = SubResource("Curve2D_0wau8")
+script = ExtResource("1_7mx6u")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="."]
+
+[node name="PresentArea" type="Area2D" parent="PathFollow2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PathFollow2D/PresentArea"]
+shape = SubResource("CircleShape2D_26ynw")
+
+[node name="AnimatedSprite" type="AnimatedSprite2D" parent="PathFollow2D/PresentArea"]
+sprite_frames = SubResource("SpriteFrames_tpyma")
+animation = &"Open"
+frame = 2
+frame_progress = 1.0

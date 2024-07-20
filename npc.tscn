@@ -1,0 +1,28 @@
+[gd_scene load_steps=6 format=3 uid="uid://cidmxnaxw82iy"]
+
+[ext_resource type="Script" path="res://NPC.gd" id="1_t7cee"]
+[ext_resource type="Texture2D" uid="uid://ro3tgfnnyc6u" path="res://tilemap.png" id="2_2q1lj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ksabl"]
+size = Vector2(16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vs6ro"]
+atlas = ExtResource("2_2q1lj")
+region = Rect2(51, 137, 16, 16)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8w3ge"]
+radius = 32.0
+
+[node name="NPC" type="CharacterBody2D"]
+script = ExtResource("1_t7cee")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ksabl")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_vs6ro")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_8w3ge")

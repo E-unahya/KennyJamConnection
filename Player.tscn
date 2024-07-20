@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://dpsgusb073q24"]
+
+[ext_resource type="Texture2D" uid="uid://ro3tgfnnyc6u" path="res://tilemap.png" id="1_e4uwx"]
+[ext_resource type="Script" path="res://Player.gd" id="1_tbnv7"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hg13e"]
+atlas = ExtResource("1_e4uwx")
+region = Rect2(68, 119, 16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kdpou"]
+size = Vector2(16, 16)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_idhtf"]
+radius = 16.0
+
+[node name="Player" type="CharacterBody2D"]
+input_pickable = true
+script = ExtResource("1_tbnv7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_hg13e")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_kdpou")
+
+[node name="PlayerMouseArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerMouseArea"]
+shape = SubResource("CircleShape2D_idhtf")
