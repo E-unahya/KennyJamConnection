@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://duk5g3hxyv4qt"]
+
+[ext_resource type="Script" path="res://Enemy/Cyclops.gd" id="1_02x30"]
+[ext_resource type="Texture2D" uid="uid://ro3tgfnnyc6u" path="res://tilemap.png" id="1_lw3x5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_h07l1"]
+radius = 8.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_njiy6"]
+atlas = ExtResource("1_lw3x5")
+region = Rect2(17, 153, 16, 16)
+
+[node name="Cyclops" type="CharacterBody2D" groups=["Enemy"]]
+script = ExtResource("1_02x30")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_h07l1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_njiy6")

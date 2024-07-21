@@ -1,5 +1,7 @@
 extends Node2D
 
+@export_file("*.tscn") var next_scene : String
+
 ## タイルマップはタイルマップだ、それ以上でもそれ以下でもない
 @onready var tile_map = $TileMap
 ## ここからセットするレールを選択する
@@ -38,7 +40,7 @@ var set_tile_data : Vector2i
 var rail_shurui : Dictionary
 
 func _ready():
-	set_tile_data = Vector2i(-1, -1)
+	set_tile_data = Vector2i(7, 5)
 	rail_shurui = {
 		"UP": up.get_meta("AtlasCoodies", null),
 		"DOWN":down.get_meta("AtlasCoodies", null),
@@ -60,9 +62,10 @@ func _process(delta):
 
 func _input(event):
 	if event.is_action_pressed("click") and player_mouse_entered:
-		pick_up_rails()
-	if event.is_action_released("right_click") and set_tile_data != Vector2i(-1, -1):
 		set_rail(set_tile_data)
+		# pick_up_rails()
+	# if event.is_action_released("right_click") and set_tile_data != Vector2i(-1, -1):
+		# set_rail(set_tile_data)
 
 
 func pick_up_rails():
@@ -142,7 +145,7 @@ func set_rail(choice_rail : Vector2i) -> void:
 				if rail_address[Vector2i.RIGHT] == Vector2i(8,6) or rail_address[Vector2i.RIGHT] == Vector2i(10, 5) or rail_address[Vector2i.RIGHT] == Vector2i(9,6):
 					choice_rail = Vector2i(9,5)
 	tile_map.set_cell(1, tile_pos , 0, choice_rail)
-	set_tile_data = Vector2i(-1, -1)
+	set_tile_data = Vector2i(7,5)
 	mouse_animation.play("LeftClick")
 
 func get_tile_info(tile_pos:Vector2i) -> Dictionary:
@@ -216,7 +219,9 @@ func _on_button_pressed():
 	curve.add_point(start)
 	## レールの位置を取得した物
 	var rail_address_array = tile_map.get_used_cells(1)
-	if rail_address_array[0] * 16 == start:
+	if rail_address_array.is_empty():
+		return
+	if rail_address_array[0] * 16 == Vector2i(start):
 		return
 	## レールの位置に沿って宝箱が移動できるようにしたい。
 	for r in rail_address_array:
@@ -226,3 +231,7 @@ func _on_button_pressed():
 	present.curve = curve
 	add_child(present)
 	present.go = true
+
+
+func _on_goal_clear():
+	get_tree().change_scene_to_file(next_scene)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cidmxnaxw82iy"]
+[gd_scene load_steps=12 format=3 uid="uid://cidmxnaxw82iy"]
 
 [ext_resource type="Script" path="res://NPC.gd" id="1_t7cee"]
 [ext_resource type="Texture2D" uid="uid://ro3tgfnnyc6u" path="res://tilemap.png" id="2_2q1lj"]
@@ -11,7 +11,134 @@ atlas = ExtResource("2_2q1lj")
 region = Rect2(51, 137, 16, 16)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8w3ge"]
-radius = 16.0
+radius = 24.0
+
+[sub_resource type="Animation" id="Animation_hhe0i"]
+resource_name = "Clear"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(2.08165e-12, -32), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 31.4159]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(2, 2), Vector2(1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("GPUParticles2D:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+
+[sub_resource type="Animation" id="Animation_4d1ok"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("GPUParticles2D:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_11tjr"]
+_data = {
+"Clear": SubResource("Animation_hhe0i"),
+"RESET": SubResource("Animation_4d1ok")
+}
+
+[sub_resource type="Gradient" id="Gradient_2iln1"]
+colors = PackedColorArray(0.870057, 0.92257, 0.81273, 1, 0.840805, 0.642052, 0.935053, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_rao1l"]
+gradient = SubResource("Gradient_2iln1")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_b4gsv"]
+particle_flag_disable_z = true
+emission_shape_offset = Vector3(2.08165e-12, 2.08165e-12, 2.08165e-12)
+direction = Vector3(2.08165e-12, -1, 2.08165e-12)
+initial_velocity_min = 90.0
+initial_velocity_max = 90.0
+gravity = Vector3(0, 98, 0)
+tangential_accel_min = -100.0
+tangential_accel_max = 100.0
+scale_min = 3.0
+scale_max = 3.0
+color_ramp = SubResource("GradientTexture1D_rao1l")
 
 [node name="NPC" type="CharacterBody2D"]
 script = ExtResource("1_t7cee")
@@ -27,4 +154,16 @@ texture = SubResource("AtlasTexture_vs6ro")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_8w3ge")
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_11tjr")
+}
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 90
+process_material = SubResource("ParticleProcessMaterial_b4gsv")
+one_shot = true
+
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
