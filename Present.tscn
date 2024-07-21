@@ -1,11 +1,27 @@
-[gd_scene load_steps=9 format=3 uid="uid://dybm4q1hh8rj4"]
+[gd_scene load_steps=12 format=3 uid="uid://dybm4q1hh8rj4"]
 
 [ext_resource type="Script" path="res://Present.gd" id="1_7mx6u"]
 [ext_resource type="Texture2D" uid="uid://ro3tgfnnyc6u" path="res://tilemap.png" id="2_tqkoa"]
 
 [sub_resource type="Curve2D" id="Curve2D_0wau8"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 31, 42, 0, 0, 0, 0, 96, -9, 0, 0, 0, 0, 100, 51)
+}
+point_count = 4
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_26ynw"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k4klj"]
+atlas = ExtResource("2_tqkoa")
+region = Rect2(119, 119, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_76whf"]
+atlas = ExtResource("2_tqkoa")
+region = Rect2(102, 119, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j7uid"]
+atlas = ExtResource("2_tqkoa")
+region = Rect2(85, 119, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_htihg"]
 atlas = ExtResource("2_tqkoa")
@@ -21,6 +37,20 @@ region = Rect2(119, 119, 16, 16)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tpyma"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k4klj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_76whf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j7uid")
+}],
+"loop": false,
+"name": &"Close",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_htihg")
@@ -41,14 +71,18 @@ curve = SubResource("Curve2D_0wau8")
 script = ExtResource("1_7mx6u")
 
 [node name="PathFollow2D" type="PathFollow2D" parent="."]
+position = Vector2(100, 51)
+progress = 194.954
+rotates = false
+loop = false
 
-[node name="PresentArea" type="Area2D" parent="PathFollow2D"]
+[node name="Present" type="CharacterBody2D" parent="PathFollow2D"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PathFollow2D/PresentArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PathFollow2D/Present"]
 shape = SubResource("CircleShape2D_26ynw")
 
-[node name="AnimatedSprite" type="AnimatedSprite2D" parent="PathFollow2D/PresentArea"]
+[node name="AnimatedSprite" type="AnimatedSprite2D" parent="PathFollow2D/Present"]
 sprite_frames = SubResource("SpriteFrames_tpyma")
-animation = &"Open"
+animation = &"Close"
 frame = 2
 frame_progress = 1.0

@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://bexvs5730jpli"]
+
+[ext_resource type="Texture2D" uid="uid://ro3tgfnnyc6u" path="res://tilemap.png" id="1_6ju0u"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v628f"]
+atlas = ExtResource("1_6ju0u")
+region = Rect2(170, 102, 16, 16)
+
+[node name="Ui" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150.0
+offset_top = 24.0
+offset_right = -88.0
+offset_bottom = 55.0
+grow_horizontal = 0
+scale = Vector2(2, 2)
+text = "GO!!"
+icon = SubResource("AtlasTexture_v628f")

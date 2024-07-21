@@ -9,6 +9,11 @@ extends Node2D
 
 @onready var target = $Target
 
+# スタートの人
+@onready var start_man = $StartMan
+
+# ゴールの人
+@onready var goal = $Goal
 
 ## プレイヤーがマウスの中に入ったことを知らせる
 var player_mouse_entered : bool
@@ -99,22 +104,43 @@ func set_rail(choice_rail : Vector2i) -> void:
 		Vector2i(7,5) : Vector2i(9, 6),
 		Vector2i(9,6) : Vector2i(9, 6),
 		Vector2i(8,5) : Vector2i(11, 6),
-		Vector2i(7,6) : Vector2i(10, 7),
+		Vector2i(11, 6):Vector2i(11, 6),
+		Vector2i(7,6) : Vector2i(10, 5),
 		Vector2i(8,6) : Vector2i(10, 5),
-		Vector2i(10, 7) : Vector2i(10, 7),
 		Vector2i(10, 5) : Vector2i(10, 5)
 	}
-	var info_array = []
+	var rail_address = {}
 	## もし何かレールの情報を取得したときに適切なレールを設置したいなぁ
 	for t in tile_info.keys():
 		if tile_info[t] != Vector2i(-1, -1):
-			info_array.append(tile_info[t])
+			rail_address[t] = tile_info[t]
 		if tile_info[t] == choice_rail or tile_info[t] == kore[choice_rail]:
 			# タイルインフォで取得した情報を何とかして
 			var tile_info02 = get_tile_info(tile_pos + t)
 			# デバッグ用のメソッド
-			check_tile_info(tile_info02)
+			# check_tile_info(tile_info02)
 			choice_rail = kore[tile_info[t]]
+	print(rail_address)
+	## 上にレールがあるならこれ、左にレールがあるならそれ！
+	## 右にレールがあるなら()、左にレールがあるなら()といった感じに進めたい
+	## 上になんかあったら
+	## 正直何とかしたいコード、誰か助けて
+	if rail_address.has(Vector2i.UP):
+		if rail_address[Vector2i.UP] == Vector2i(7,5) or rail_address[Vector2i.UP] == Vector2i(9,6):
+			if rail_address.has(Vector2i.LEFT):
+				if rail_address[Vector2i.LEFT] == Vector2i(7,6) or rail_address[Vector2i.LEFT] == Vector2i(10,5):
+					choice_rail = Vector2i(11, 7)
+			if rail_address.has(Vector2i.RIGHT):
+				if rail_address[Vector2i.RIGHT] == Vector2i(8,6) or rail_address[Vector2i.RIGHT] == Vector2i(8,6):
+					choice_rail = Vector2i(9,7)
+	if rail_address.has(Vector2i.DOWN):
+		if rail_address[Vector2i.DOWN] == Vector2i(8, 5) or rail_address[Vector2i.DOWN] == Vector2i(9, 6):
+			if rail_address.has(Vector2i.LEFT):
+				if rail_address[Vector2i.LEFT] == Vector2i(7,6) or rail_address[Vector2i.LEFT] == Vector2i(10,5) or rail_address[Vector2i.LEFT] == Vector2i(9,6):
+					choice_rail = Vector2i(11, 5)
+			if rail_address.has(Vector2i.RIGHT):
+				if rail_address[Vector2i.RIGHT] == Vector2i(8,6) or rail_address[Vector2i.RIGHT] == Vector2i(10, 5) or rail_address[Vector2i.RIGHT] == Vector2i(9,6):
+					choice_rail = Vector2i(9,5)
 	tile_map.set_cell(1, tile_pos , 0, choice_rail)
 	set_tile_data = Vector2i(-1, -1)
 	mouse_animation.play("LeftClick")
@@ -126,10 +152,14 @@ func get_tile_info(tile_pos:Vector2i) -> Dictionary:
 		Vector2i.DOWN : tile_map.get_cell_atlas_coords(1, tile_pos + Vector2i.DOWN),
 		Vector2i.RIGHT: tile_map.get_cell_atlas_coords(1, tile_pos + Vector2i.RIGHT),
 		Vector2i.LEFT: tile_map.get_cell_atlas_coords(1, tile_pos + Vector2i.LEFT),
-		# "UPLEFT":tile_map.get_cell_atlas_coords(1, tile_pos + Vector2i.UP + Vector2i.LEFT),
-		# "UPRIGHT":tile_map.get_cell_atlas_coords(1, tile_pos + Vector2i.UP + Vector2i.RIGHT),
-		# "DOWNLEFT":tile_map.get_cell_atlas_coords(1, tile_pos + Vector2i.DOWN + Vector2i.LEFT),
-		# "DOWNRIGHT":tile_map.get_cell_atlas_coords(1, tile_pos + Vector2i.DOWN + Vector2i.RIGHT)
+		# UPLEFT
+		Vector2i(-1, -1):tile_map.get_cell_atlas_coords(1, tile_pos + Vector2i.UP + Vector2i.LEFT),
+		# UPRIGHT
+		Vector2i(1, -1):tile_map.get_cell_atlas_coords(1, tile_pos + Vector2i.UP + Vector2i.RIGHT),
+		# DOWNLEFT
+		Vector2i(-1, 1):tile_map.get_cell_atlas_coords(1, tile_pos + Vector2i.DOWN + Vector2i.LEFT),
+		# DOWNRIGHT
+		Vector2i(1, 1):tile_map.get_cell_atlas_coords(1, tile_pos + Vector2i.DOWN + Vector2i.RIGHT)
 	}
 	return tile_info
 
@@ -144,6 +174,14 @@ func check_tile_info(tile_info : Dictionary):
 				print("左:" + str(tile_info[t2]))
 			Vector2i.RIGHT:
 				print("右:" + str(tile_info[t2]))
+			Vector2i(-1, -1):
+				print("上左:" + str(tile_info[t2]))
+			Vector2i(1, -1):
+				print("上右:" + str(tile_info[t2]))
+			Vector2i(-1, 1):
+				print("下左:" + str(tile_info[t2]))
+			Vector2i(1, 1):
+				print("下右:" + str(tile_info[t2]))
 
 func _on_player_mouse_entered():
 	player_mouse_entered = true
@@ -168,3 +206,23 @@ func _on_rails_sprite_tween_finished():
 	for r in rails.get_children():
 		r.get_child(0).set_process_unhandled_input(true)
 
+func _on_button_pressed():
+	var present = preload("res://Present.tscn").instantiate()
+	var start = start_man.position
+	var goal = goal.position
+	var curve = Curve2D.new()
+	curve.bake_interval = 2.0
+	## スタートを追加する。
+	curve.add_point(start)
+	## レールの位置を取得した物
+	var rail_address_array = tile_map.get_used_cells(1)
+	if rail_address_array[0] * 16 == start:
+		return
+	## レールの位置に沿って宝箱が移動できるようにしたい。
+	for r in rail_address_array:
+		## タイルが隣接しているもの同士でなければ追加されないように変更する。
+		curve.add_point(r * 16)
+	## タイルが隣接していなければゴールへいけないようにしたい。
+	present.curve = curve
+	add_child(present)
+	present.go = true
